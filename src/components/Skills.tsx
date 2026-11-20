@@ -1,7 +1,10 @@
 const skillGroups = [
-  { title: "Languages", items: ["TypeScript", "JavaScript", "Python", "Java", "C", "SQL"] },
-  { title: "Frameworks", items: ["React", "Next.js", "Node.js", "Tailwind CSS"] },
-  { title: "Tools", items: ["Git", "Docker", "PostgreSQL", "Linux", "VS Code"] },
+  { title: "Languages", items: ["Python", "Java", "JavaScript", "TypeScript", "SQL", "Bash"] },
+  { title: "AI & LLM", items: ["LangChain", "LangGraph", "LangSmith", "Gemini API", "Claude API", "Prompt Engineering", "LLM Traceability"] },
+  { title: "ML & Data", items: ["Scikit-learn", "Pandas", "NumPy", "PyTorch", "Matplotlib"] },
+  { title: "Web & Backend", items: ["React", "Node.js", "Next.js", "Express.js", "REST APIs"] },
+  { title: "Databases", items: ["PostgreSQL", "MySQL", "MongoDB", "Redis"] },
+  { title: "Cloud, DevOps & Testing", items: ["Docker", "Google Cloud Run", "Git", "Pytest"] },
 ];
 
 export function Skills() {
