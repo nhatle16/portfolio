@@ -8,19 +8,24 @@ type Job = {
 
 const jobs: Job[] = [
   {
-    role: "Software Developer Intern",
-    org: "Company Name",
-    dates: "May 2025 – Aug 2025",
+    role: "Teaching Assistant - CMPT 141",
+    org: "University of Saskatchewan",
+    dates: "Sep. 2026 - Current",
     points: [
-      "What you built or improved, with a number if you have one.",
-      "Tech you used and the result.",
+      "Led weekly tutorials for 20+ undergraduate students, breaking down loops, debugging and other fundamental programming concepts using analogies.",
+      "Resolved 10+ help requests per week in lab and by email to help configuring IDE, explaining syntax and errors, aiding coding exercises and clarifying specific assignment concerns.",
+      "Received positive student feedback on clarity of explanation."
     ],
   },
   {
-    role: "Teaching Assistant, CMPT 145",
-    org: "University of Saskatchewan",
-    dates: "Sep 2024 – Apr 2025",
-    points: ["Led weekly labs for 40 students."],
+    role: "AI Evaluation Generalist (Fellow)",
+    org: "Handshake AI",
+    dates: "Sep. 2026 - Oct. 2026",
+    points: [
+        "Evaluated and benchmarked multimodal model outputs (text, image, and video) across instruction fidelity, semantic consistency, and visual artifacts to inform model alignment.",
+        "Designed adversarial prompts and edge-case scenarios to evaluate foundation models across multi-step reasoning, instruction following, and safety benchmarks.",
+        "Systematically identified safety policy violations, semantic hallucinations, and rendering flaws to refine post-training data pipelines for partner AI research labs."
+    ],
   },
 ];
 
