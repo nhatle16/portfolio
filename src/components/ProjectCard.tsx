@@ -2,6 +2,7 @@ export type Project = {
     name: string;
     description: string;
     tech: string[];
+    images?: string[];
     live?: string;
     source?: string;
 }
