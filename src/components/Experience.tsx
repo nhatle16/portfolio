@@ -12,9 +12,8 @@ const jobs: Job[] = [
     org: "University of Saskatchewan",
     dates: "Sep. 2026 - Current",
     points: [
-      "Led weekly tutorials for 20+ undergraduate students, breaking down loops, debugging and other fundamental programming concepts using analogies.",
-      "Resolved 10+ help requests per week in lab and by email to help configuring IDE, explaining syntax and errors, aiding coding exercises and clarifying specific assignment concerns.",
-      "Received positive student feedback on clarity of explanation."
+      "Run weekly tutorials for 20+ students, explaining loops and debugging with analogies.",
+      "Handle 10+ help requests a week, from IDE setup to cryptic error messages."
     ],
   },
   {
@@ -22,9 +21,8 @@ const jobs: Job[] = [
     org: "Handshake AI",
     dates: "Sep. 2026 - Oct. 2026",
     points: [
-        "Evaluated and benchmarked multimodal model outputs (text, image, and video) across instruction fidelity, semantic consistency, and visual artifacts to inform model alignment.",
-        "Designed adversarial prompts and edge-case scenarios to evaluate foundation models across multi-step reasoning, instruction following, and safety benchmarks.",
-        "Systematically identified safety policy violations, semantic hallucinations, and rendering flaws to refine post-training data pipelines for partner AI research labs."
+      "Designed adversarial prompts to stress-test foundation models on reasoning, instruction following and safety.",
+      "Flagged hallucinations and policy violations to improve post-training data for AI labs."
     ],
   },
 ];
