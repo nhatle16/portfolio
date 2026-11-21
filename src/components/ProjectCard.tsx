@@ -1,3 +1,5 @@
+import { ScreenshotStrip } from "./ScreenshotStrip";
+
 export type Project = {
     name: string;
     description: string;
@@ -9,7 +11,10 @@ export type Project = {
 
 export function ProjectCard({ project }: { project: Project }) {
     return (
-    <article className="rounded-lg border border-neutral-300 dark:border-neutral-700 p-5 space-y-3">
+    <article className="min-w-0 rounded-lg border border-neutral-300 dark:border-neutral-700 p-5 space-y-3">
+      {project.images && project.images.length > 0 && (
+        <ScreenshotStrip name={project.name} images={project.images} />
+      )}
       <h3 className="text-lg font-semibold">{project.name}</h3>
       <p className="text-neutral-600 dark:text-neutral-400">{project.description}</p>
       <ul className="flex flex-wrap gap-2 text-sm">

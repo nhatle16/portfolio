@@ -6,6 +6,13 @@ const projects: Project[] = [
     name: "CrashCode - 🏆 1st Place Winner, Co.Hack 2026",
     description: "An AI-powered testing tool that helps identify accessibility issues in web applications by simulating different users and their interactions.",
     tech: ["TypeScript", "Node.js", "Playwright", "WebSocket", "Claude API", "Gemini API", "React", "Docker", "Google Cloud Run"],
+    images: [
+      "/projects/crashcode-landing.png",
+      "/projects/crashcode-example.png",
+      "/projects/crashcode-runs.png",
+      "/projects/crashcode-report-status.png",
+      "/projects/crashcode-findings.png",
+    ],
     live: "https://crashcode.ca",
     source: "https://github.com/you/project-one",
   },
