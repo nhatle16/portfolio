@@ -1,10 +1,10 @@
-import { ScreenshotStrip } from "./ScreenshotStrip";
+import { ScreenshotStrip, type Screenshot } from "./ScreenshotStrip";
 
 export type Project = {
     name: string;
     description: string;
     tech: string[];
-    images?: string[];
+    images?: Screenshot[];
     live?: string;
     source?: string;
 }

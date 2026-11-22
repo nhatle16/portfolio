@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* neobrutalism tokens used by components/ui (image-card) */
+  --border: #000000;
+  --shadow: 4px 4px 0px 0px var(--border);
+  --card-tint: #dfe5f2;
 }
 
 @theme inline {
@@ -10,12 +14,19 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-border: var(--border);
+  --radius-base: 5px;
+  --shadow-shadow: var(--shadow);
+  --font-weight-base: 500;
+  --color-card-tint: var(--card-tint);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --border: #a3a3a3;
+    --card-tint: #1e2a44;
   }
 }
 

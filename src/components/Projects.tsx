@@ -7,11 +7,26 @@ const projects: Project[] = [
     description: "An AI-powered testing tool that helps identify accessibility issues in web applications by simulating different users and their interactions.",
     tech: ["TypeScript", "Node.js", "Playwright", "WebSocket", "Claude API", "Gemini API", "React", "Docker", "Google Cloud Run"],
     images: [
-      "/projects/crashcode-landing.png",
-      "/projects/crashcode-example.png",
-      "/projects/crashcode-runs.png",
-      "/projects/crashcode-report-status.png",
-      "/projects/crashcode-findings.png",
+      {
+        src: "/projects/crashcode-landing.png",
+        description: "Landing page: CrashCode sends a team of AI testers with different disabilities through your website.",
+      },
+      {
+        src: "/projects/crashcode-example.png",
+        description: "Live run: an AI persona working through a task on a real site while you watch.",
+      },
+      {
+        src: "/projects/crashcode-runs.png",
+        description: "Test runs: every persona runs in parallel, with its progress shown side by side.",
+      },
+      {
+        src: "/projects/crashcode-report-status.png",
+        description: "Report: which personas completed the task, before and after the fixes.",
+      },
+      {
+        src: "/projects/crashcode-findings.png",
+        description: "Findings: each WCAG issue with its severity, the broken code and the suggested fix.",
+      },
     ],
     live: "https://crashcode.ca",
     source: "https://github.com/you/project-one",
