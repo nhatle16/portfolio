@@ -8,7 +8,7 @@
   --shadow-x: 10px;
   --shadow-y: 6px;
   --shadow: var(--shadow-x) var(--shadow-y) 0px 0px var(--border);
-  --card-tint: #dfe5f2;
+  --card-tint: #1bb5f2;
 }
 
 @theme inline {
@@ -16,6 +16,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-grotesk: var(--font-space-grotesk); /* loaded in layout.tsx, used by project names and tech tags */
   --color-border: var(--border);
   --radius-base: 5px;
   --shadow-shadow: var(--shadow);

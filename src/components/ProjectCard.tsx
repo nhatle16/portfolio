@@ -23,10 +23,10 @@ export function ProjectCard({ project }: { project: Project }) {
         {project.images && project.images.length > 0 && (
           <ScreenshotStrip name={project.name} images={project.images} />
         )}
-        <h3 className="text-xl font-bold">{project.name}</h3>
+        <h3 className="font-grotesk text-xl font-bold">{project.name}</h3>
         {/* hyphens-auto splits long words so justified lines don't get wide gaps */}
         <p className="text-justify hyphens-auto text-neutral-600 dark:text-neutral-400">{project.description}</p>
-        <ul className="flex flex-wrap gap-2 text-sm font-medium">
+        <ul className="flex flex-wrap gap-2 font-grotesk text-sm font-medium">
           {project.tech.map((t) => (
             <li key={t} className="rounded-xs border-2 border-border px-2 py-0.5">{t}</li>
           ))}
