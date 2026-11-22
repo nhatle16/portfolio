@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { ScreenshotStrip, type Screenshot } from "./ScreenshotStrip";
 
 export type Project = {
@@ -47,10 +47,15 @@ export function ProjectCard({ project }: { project: Project }) {
             <a
               key={l.label}
               href={l.href}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex flex-1 items-center justify-between px-5 py-3 font-semibold hover:bg-card-tint"
             >
-              {l.label}
-              <ArrowRight aria-hidden="true" className="size-5" />
+              <span>
+                {l.label}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </span>
+              <ArrowUpRight aria-hidden="true" className="size-5" />
             </a>
           ))}
         </div>
