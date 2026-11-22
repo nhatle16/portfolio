@@ -3,9 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  /* neobrutalism tokens used by components/ui (image-card) */
+  /* neobrutalism tokens used by components/ui; --shadow-x/--shadow-y offset the image card's outline from the card */
   --border: #000000;
-  --shadow: 4px 4px 0px 0px var(--border);
+  --shadow-x: 10px;
+  --shadow-y: 6px;
+  --shadow: var(--shadow-x) var(--shadow-y) 0px 0px var(--border);
   --card-tint: #dfe5f2;
 }
 

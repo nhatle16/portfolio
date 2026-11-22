@@ -89,8 +89,8 @@ export function ScreenshotStrip({ name, images }: { name: string; images: Screen
           if (e.key === "ArrowRight") go(1);
         }}
         // Backdrop contrasts with the border: light behind the black border, dark behind the white one.
-        // pb-1 leaves room for the card's 4px shadow, which the dialog would otherwise clip.
-        className="m-auto w-[min(64rem,calc(100%-2rem))] max-w-none bg-transparent p-0 pb-1 text-foreground backdrop:bg-white/85 backdrop:backdrop-blur-sm dark:backdrop:bg-black/85"
+        // Bottom padding leaves room for the card's offset outline, which the dialog would otherwise clip.
+        className="m-auto w-[min(64rem,calc(100%-2rem))] max-w-none bg-transparent p-0 pb-(--shadow-y) text-foreground backdrop:bg-white/85 backdrop:backdrop-blur-sm dark:backdrop:bg-black/85"
       >
         <div className="flex justify-end pb-2">
           <button
