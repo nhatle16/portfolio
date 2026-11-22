@@ -1,6 +1,7 @@
 // src/components/Navbar.tsx
 import Link from "next/link";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const links = [
   { href: "#about", label: "About" },
@@ -25,6 +26,7 @@ export function Navbar() {
               </li>
             ))}
           </ul>
+          <ThemeToggle />
           <Avatar size="lg">
             <AvatarImage src="/avatar.jpg" alt="Nolan Le" />
           </Avatar>

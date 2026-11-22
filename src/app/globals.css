@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* dark: classes follow <html data-theme="dark">, set by the script in layout.tsx and the ThemeToggle button */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -24,13 +27,12 @@
   --color-card-tint: var(--card-tint);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --border: #a3a3a3;
-    --card-tint: #1e2a44;
-  }
+/* Dark theme colours, used when <html data-theme="dark"> */
+:root[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --border: #a3a3a3;
+  --card-tint: #1e2a44;
 }
 
 body {
