@@ -29,13 +29,11 @@ const projects: Project[] = [
       },
     ],
     live: "https://crashcode.ca",
-    source: "https://github.com/you/project-one",
   },
   {
     name: "AFTA",
     description: "A LangChain agent that turns a Python function into a pytest draft without ever running the code. 96% of generated drafts parse, checked by its own eval harness.",
     tech: ["Python", "LangChain", "LangSmith", "Gemini API", "Pytest", "Ruff"],
-    live: "",
     source: "https://github.com/nhatle16/autonomous-testing-agent",
   },
 ];
