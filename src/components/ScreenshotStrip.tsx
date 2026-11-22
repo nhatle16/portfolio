@@ -66,7 +66,7 @@ export function ScreenshotStrip({ name, images }: { name: string; images: Screen
               src={img.src}
               alt={img.description}
               fill
-              sizes="(min-width: 640px) 300px, 100vw"
+              sizes="(min-width: 640px) 500px, 100vw"
               loading="eager"
               className={`object-cover object-top ${i === index ? "" : "hidden"}`}
             />

@@ -7,7 +7,7 @@ import { Skills } from "@/components/Skills";
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4">
+    <main className="mx-auto w-full max-w-6xl px-4">
       <Hero />
       <About />
       <Projects />

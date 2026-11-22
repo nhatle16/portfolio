@@ -26,11 +26,20 @@ export function ProjectCard({ project }: { project: Project }) {
         <h3 className="font-grotesk text-xl font-bold">{project.name}</h3>
         {/* hyphens-auto splits long words so justified lines don't get wide gaps */}
         <p className="text-justify hyphens-auto text-neutral-600 dark:text-neutral-400">{project.description}</p>
-        <ul className="flex flex-wrap gap-2 font-grotesk text-sm font-medium">
-          {project.tech.map((t) => (
-            <li key={t} className="rounded-xs border-2 border-border px-2 py-0.5">{t}</li>
-          ))}
-        </ul>
+        <div className="space-y-1 font-grotesk text-sm">
+          <span aria-hidden="true" className="block text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            Built with
+          </span>
+          <ul aria-label="Built with" className="flex flex-wrap gap-x-2 gap-y-1 font-medium">
+            {project.tech.map((t, i) => (
+              <li key={t} className="flex gap-2">
+                {t}
+                {/* Dot after each item (not before) so a wrapped line never starts with one. */}
+                {i < project.tech.length - 1 && <span aria-hidden="true" className="text-neutral-400">·</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
       {links.length > 0 && (
         <div className="flex divide-x-2 divide-border border-t-2 border-border">
