@@ -57,7 +57,7 @@ export function ScreenshotStrip({ name, images }: { name: string; images: Screen
           type="button"
           onClick={() => dialog.current?.showModal()}
           aria-label={`Enlarge ${label(index)}`}
-          className="relative aspect-video min-w-0 flex-1 cursor-zoom-in overflow-hidden rounded-md border border-neutral-300"
+          className="relative aspect-video min-w-0 flex-1 cursor-zoom-in overflow-hidden rounded-xs border-2 border-border"
         >
           {/* All images stay mounted (only the current one shown) so switching is instant. */}
           {images.map((img, i) => (
