@@ -69,8 +69,8 @@ export function Experience() {
               <job.icon aria-hidden="true" className="size-5" />
             </div>
             <Reveal delay={i * 120}>
-              {/* Same card as Skills/Contact; lifts on hover like the Contact buttons. */}
-              <article className="space-y-3 rounded-xs border-2 border-border bg-background p-5 shadow-[4px_4px_0_0_var(--border)] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--border)]">
+              {/* Same card as Skills/Contact. */}
+              <article className="space-y-3 rounded-xs border-2 border-border bg-background p-5 shadow-[4px_4px_0_0_var(--border)]">
                 <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
                   <div>
                     <h3 className="font-grotesk text-lg font-bold">{job.role}</h3>
