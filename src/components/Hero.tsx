@@ -8,7 +8,7 @@ export function Hero() {
         <section className="grid items-center gap-10 py-20 sm:py-28 md:grid-cols-[auto_1fr] md:gap-16">
             {/* The photo is portrait, so the square shows only part of its height. object-bottom keeps
                 the bottom square and drops the sky; object-[50%_80%] would keep a little more sky. */}
-            <div className="size-60 overflow-hidden rounded-xs border-2 border-border shadow-[6px_6px_0_0_var(--border)] sm:size-72">
+            <div className="size-60 overflow-hidden rounded-xs sm:size-72">
                 <Image
                     src="/picture.jpg"
                     alt="Nolan Le"
@@ -22,10 +22,9 @@ export function Hero() {
             <div className="space-y-5 text-lg sm:text-xl">
                 <h1 className="font-grotesk text-5xl font-bold sm:text-6xl">Minh Nhat (Nolan) Le</h1>
                 <p className="font-garamond text-xl sm:text-2xl">I am a Computer Science Honours student at the University of Saskatchewan, graduating in April 2027.</p>
-                <p className="font-garamond text-xl sm:text-2xl">I am currently a Teaching Assistant for CMPT 141.</p>
+                <p className="font-garamond text-xl sm:text-2xl">I am currently a Teaching Assistant for CMPT 141 at the University of Saskatchewan.</p>
                 <p className="font-garamond text-xl sm:text-2xl">
-                    I build AI agents that break things on purpose (websites, code, models) so real users don&apos;t
-                    have to. Take a look at my <a href="#projects" className={link}>projects</a>.
+                    I use AI agents and build AI-powered software to automate repetitive tasks and boost productivity. Take a look at my <a href="#projects" className={link}>projects</a>.
                 </p>
             </div>
         </section>
