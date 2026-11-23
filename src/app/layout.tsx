@@ -26,7 +26,10 @@ const ebGaramond = EB_Garamond({
 });
 
 export const metadata: Metadata = {
+  // Makes the og:image URL absolute, which LinkedIn and other link previews need.
+  metadataBase: new URL("https://minhnhatle.vercel.app"),
   title: "Nolan Le's Portfolio",
+  description: "Computer Science student at the University of Saskatchewan, building AI-powered software.",
 };
 
 // Runs before the first paint: use the saved choice, else the system setting, so the page never flashes the wrong theme.
