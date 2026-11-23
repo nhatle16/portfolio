@@ -25,13 +25,21 @@ type Puff = { x: number; y: number; age: number };
 type PlanetSpec = {
   fx: number; fy: number; r: number; base: string; tilt: number; bob: number;
   spin: number; // rotation speed, radians per second (one full turn takes 2π / spin seconds)
-  bands?: string[]; land?: string[]; craters?: string; ring?: string; glow?: string;
+  bands?: string[]; craters?: string; ring?: string; glow?: string;
+  // Earth: land = [coast, main land colour, ...inland patch colours]; ice for the polar caps;
+  // shallows for lighter patches of sea; terminator for a crisp day/night edge.
+  land?: string[]; ice?: string[]; shallows?: string; terminator?: boolean;
 };
 const PLANETS: PlanetSpec[] = [
   // Saturn-like: pale blue-white bands with golden rings
   { fx: 0.9, fy: 0.2, r: 70, base: "#dbe4ee", bands: ["#9ec5e8", "#f8fafc", "#7393b3", "#c9d6e3"], ring: "#e9c46a", tilt: -0.35, bob: 0.25, spin: 0.1 },
-  // Earth-like: blue ocean with warm continents and a thin atmosphere
-  { fx: 0.07, fy: 0.78, r: 48, base: "#3d7fb8", land: ["#e9c46a", "#d9893d", "#f4a261", "#8fae7e", "#e76f51"], glow: "#bae6fd", tilt: 0.2, bob: 0.18, spin: 0.12 },
+  // Earth, after the illustrated reference: blue ocean, big sandy continents with red-orange coasts and
+  // olive/green inland, pale polar ice, a crisp night side and a warm glow on the lit edge
+  {
+    fx: 0.07, fy: 0.78, r: 56, base: "#3f7cb5", shallows: "#6aa5d6",
+    land: ["#e4572e", "#ecc06a", "#f4a261", "#a3a04c", "#8fae7e", "#d9893d"], ice: ["#f6efe2", "#f3c4c0"],
+    glow: "#fde9c4", terminator: true, tilt: 0.2, bob: 0.18, spin: 0.12,
+  },
   // Jupiter-like: orange with red and cream stripes
   { fx: 0.96, fy: 0.62, r: 32, base: "#f4a340", bands: ["#e4572e", "#fcd88a", "#c2410c", "#fde68a"], tilt: 0.12, bob: 0.3, spin: 0.18 },
   // Mars-like: small, red, cratered
@@ -135,29 +143,74 @@ function paintSurface(p: PlanetSpec, r: number, dpr: number) {
       g.stroke();
     }
   }
+  if (p.shallows) {
+    // Lighter, shallower sea in soft patches
+    g.fillStyle = p.shallows;
+    g.globalAlpha = 0.3;
+    for (let k = 0; k < 8; k++) {
+      const patch = blobPoints(Math.random() * span, h * (0.15 + Math.random() * 0.7), r * (0.3 + Math.random() * 0.3));
+      for (const dx of seam) fillBlob(g, patch, dx);
+    }
+  }
   if (p.land) {
-    // Continents: a big blob in one colour with a smaller blob of another on top for relief.
-    for (let k = 0; k < 14; k++) {
-      const cx = Math.random() * span;
-      const cy = h * (0.12 + Math.random() * 0.76);
-      const size = r * (0.28 + Math.random() * 0.35);
-      const outer = blobPoints(cx, cy, size);
-      const inner = blobPoints(cx + size * 0.15, cy + size * 0.1, size * 0.5);
-      const [a, b] = [pick(p.land), pick(p.land)];
-      g.globalAlpha = 0.95;
+    // Continents are clusters of overlapping blobs, so they get irregular coastlines and peninsulas.
+    // Each is painted in layers: a slightly bigger red-orange coast, the sandy land on top, then
+    // smaller olive, green and orange patches inland, like the relief colours in the reference.
+    const [coast, main, ...patches] = p.land;
+    const continents = 5;
+    for (let k = 0; k < continents; k++) {
+      const cx = ((k + Math.random() * 0.6) * span) / continents;
+      const cy = h * (0.3 + Math.random() * 0.4);
+      const size = r * (0.45 + Math.random() * 0.35);
+      const parts = Array.from({ length: 6 + Math.floor(Math.random() * 4) }, () => {
+        const a = Math.random() * Math.PI * 2;
+        const d = size * Math.random() * 0.9;
+        const pr = size * (0.35 + Math.random() * 0.4);
+        return { x: cx + Math.cos(a) * d, y: cy + Math.sin(a) * d * 1.3, pr };
+      });
+      const coastShapes = parts.map((q) => blobPoints(q.x, q.y, q.pr * 1.1));
+      const landShapes = parts.map((q) => blobPoints(q.x, q.y, q.pr));
+      const inland = parts.flatMap((q) =>
+        Math.random() < 0.8 ? [{ pts: blobPoints(q.x + (Math.random() - 0.5) * q.pr, q.y + (Math.random() - 0.5) * q.pr, q.pr * (0.3 + Math.random() * 0.3)), color: pick(patches) }] : [],
+      );
       for (const dx of seam) {
-        g.fillStyle = a;
-        fillBlob(g, outer, dx);
-        g.fillStyle = b;
-        fillBlob(g, inner, dx);
+        g.globalAlpha = 1;
+        g.fillStyle = coast;
+        coastShapes.forEach((s) => fillBlob(g, s, dx));
+        g.fillStyle = main;
+        landShapes.forEach((s) => fillBlob(g, s, dx));
+        g.globalAlpha = 0.85;
+        inland.forEach(({ pts, color }) => {
+          g.fillStyle = color;
+          fillBlob(g, pts, dx);
+        });
       }
     }
     // Wispy clouds
     g.fillStyle = "#ffffff";
-    g.globalAlpha = 0.18;
-    for (let k = 0; k < 6; k++) {
-      const cloud = blobPoints(Math.random() * span, h * (0.1 + Math.random() * 0.8), r * 0.2);
+    g.globalAlpha = 0.16;
+    for (let k = 0; k < 8; k++) {
+      const cloud = blobPoints(Math.random() * span, h * (0.1 + Math.random() * 0.8), r * 0.18);
       for (const dx of seam) fillBlob(g, cloud, dx);
+    }
+  }
+  if (p.ice) {
+    // Polar caps: a wavy pale band along the top and bottom of the map, with a pink tinge at the edge.
+    const [snow, tint] = p.ice;
+    for (const [color, depth] of [[tint, 0.13], [snow, 0.1]] as const) {
+      g.fillStyle = color;
+      g.globalAlpha = 1;
+      for (const top of [true, false]) {
+        g.beginPath();
+        const edge = top ? 0 : h;
+        g.moveTo(0, edge);
+        for (let x = 0; x <= span + extra + r; x += r / 8) {
+          const d = h * depth * (0.7 + 0.3 * Math.sin((x / span) * Math.PI * 2 * 5));
+          g.lineTo(x, top ? d : h - d);
+        }
+        g.lineTo(span + extra + r, edge);
+        g.fill();
+      }
     }
   }
   if (p.craters) {
@@ -228,6 +281,15 @@ function paintPlanet(p: PlanetSpec, r: number, dpr: number): PlanetLayers {
   shade.addColorStop(1, "rgba(8,12,32,0.8)");
   g.fillStyle = shade;
   g.fillRect(-r, -r, r * 2, r * 2);
+  if (p.terminator) {
+    // Crisp day/night edge: everything outside a circle shifted to the top-left falls into shadow,
+    // leaving a dark crescent on the bottom-right like the reference.
+    const night = g.createRadialGradient(-r * 0.32, -r * 0.32, r * 0.95, -r * 0.32, -r * 0.32, r * 1.12);
+    night.addColorStop(0, "rgba(10,16,40,0)");
+    night.addColorStop(1, "rgba(10,16,40,0.78)");
+    g.fillStyle = night;
+    g.fillRect(-r, -r, r * 2, r * 2);
+  }
   const light = g.createRadialGradient(-r * 0.45, -r * 0.5, 0, -r * 0.45, -r * 0.5, r * 0.75);
   light.addColorStop(0, "rgba(255,255,255,0.28)");
   light.addColorStop(1, "rgba(255,255,255,0)");
@@ -236,14 +298,14 @@ function paintPlanet(p: PlanetSpec, r: number, dpr: number): PlanetLayers {
   g.restore(); // drop the clip
 
   if (p.glow) {
-    // Thin atmosphere on the lit edge
+    // Thin atmosphere glowing along the lit edge
     g.strokeStyle = p.glow;
-    g.globalAlpha = 0.6;
-    g.lineWidth = Math.max(1, r * 0.04);
+    g.globalAlpha = 0.7;
+    g.lineWidth = Math.max(1, r * 0.045);
     g.shadowColor = p.glow;
-    g.shadowBlur = r * 0.25;
+    g.shadowBlur = r * 0.3;
     g.beginPath();
-    g.arc(0, 0, r, Math.PI * 0.75, Math.PI * 1.85);
+    g.arc(0, 0, r, Math.PI * 0.6, Math.PI * 2.05);
     g.stroke();
     g.shadowBlur = 0;
     g.globalAlpha = 1;
