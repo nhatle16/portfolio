@@ -1,9 +1,10 @@
 export function About() {
   return (
-    <section id="about" className="py-16 space-y-4">
+    <section id="about" className="py-16 space-y-6">
       <h2 className="text-3xl font-bold">About</h2>
-      {/* hyphens-auto splits long words so justified lines don't get wide gaps */}
-      <div className="space-y-4 text-justify hyphens-auto">
+      {/* Neobrutalist card like Contact/Skills, with a warm amber-to-rose gradient.
+          hyphens-auto splits long words so justified lines don't get wide gaps. */}
+      <div className="space-y-4 rounded-xs border-2 border-border bg-linear-to-br from-amber-100 via-rose-50 to-white p-6 text-justify hyphens-auto shadow-[4px_4px_0_0_var(--border)] dark:from-amber-950 dark:via-rose-950 dark:to-background sm:p-8">
         <p>
           Hi, I’m Nhat, but most people know me as Nolan. I’m originally from Vietnam and currently pursuing my
           bachelor’s degree in Computer Science at the University of Saskatchewan in Saskatoon, Canada.
