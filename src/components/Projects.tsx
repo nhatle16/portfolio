@@ -36,6 +36,28 @@ const projects: Project[] = [
     description: "A LangChain agent built on Gemini that reads a Python function through an AST-based tool and drafts a pytest suite for it, with an automated evaluation harness\
     that runs each draft in a sandboxed environment and scores it. Eval-driven prompt changes raised the pass rate from 90% to 100%.",
     tech: ["Python", "LangChain", "LangSmith", "Gemini API", "Pytest", "Ruff"],
+    images: [
+      {
+        src: "/projects/afta-chat.png",
+        description: "Landing page: AFTA automatically generates test cases for your Python functions.",
+      },
+      {
+        src: "/projects/afta-chat-reasoning.png",
+        description: "Chat interface: AFTA provides a chat interface for interacting with the testing agent.",
+      },
+      {
+        src: "/projects/afta-chat-result.png",
+        description: "Test results: AFTA displays the results of the automated testing.",
+      },
+      {
+        src: "/projects/afta-terminal.png",
+        description: "Terminal output: AFTA runs the tests in a sandboxed environment and shows the output.",
+      },
+      {
+        src: "/projects/afta-terminal-result.png",
+        description: "Test results in terminal: AFTA shows the results of the draft tests in the terminal.",
+      }
+    ],
     source: "https://github.com/nhatle16/autonomous-testing-agent",
   },
 ];
