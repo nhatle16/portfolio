@@ -4,7 +4,8 @@ import { ProjectCard, type Project } from "./ProjectCard";
 const projects: Project[] = [
   {
     name: "CrashCode - 🏆 1st Place Winner, Co.Hack 2026",
-    description: "An AI-powered testing tool that helps identify accessibility issues in web applications by simulating different users and their interactions.",
+    description: "An AI-powered testing tool that helps identify accessibility issues in web applications by simulating different users and their interactions.\
+    The tool generates detailed reports highlighting accessibility issues, their severity, and suggested fixes, enabling developers to create more inclusive web experiences.",
     tech: ["TypeScript", "Node.js", "Playwright", "WebSocket", "Claude API", "Gemini API", "React", "Docker", "Google Cloud Run"],
     images: [
       {
@@ -32,7 +33,8 @@ const projects: Project[] = [
   },
   {
     name: "AFTA - Autonomous Function Testing Agent",
-    description: "A LangChain agent that turns a Python function into a pytest draft without ever running the code. 96% of generated drafts parse, checked by its own eval harness.",
+    description: "A LangChain agent built on Gemini that reads a Python function through an AST-based tool and drafts a pytest suite for it, with an automated evaluation harness\
+    that runs each draft in a sandboxed environment and scores it. Eval-driven prompt changes raised the pass rate from 90% to 100%.",
     tech: ["Python", "LangChain", "LangSmith", "Gemini API", "Pytest", "Ruff"],
     source: "https://github.com/nhatle16/autonomous-testing-agent",
   },
