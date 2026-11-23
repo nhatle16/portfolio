@@ -20,6 +20,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-grotesk: var(--font-space-grotesk); /* loaded in layout.tsx, used by project names and tech tags */
+  --font-garamond: var(--font-eb-garamond); /* loaded in layout.tsx; use it with the font-garamond class */
   --color-border: var(--border);
   --radius-base: 5px;
   --shadow-shadow: var(--shadow);

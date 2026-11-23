@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { EB_Garamond, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { FloatingObjects } from "@/components/FloatingObjects";
@@ -19,6 +19,11 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
+const ebGaramond = EB_Garamond({
+  variable: "--font-eb-garamond",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Nolan Le's Portfolio",
 };
@@ -33,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       data-theme="light"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased scroll-pt-16`}
+      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${ebGaramond.variable} h-full antialiased scroll-pt-16`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
