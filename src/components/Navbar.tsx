@@ -20,10 +20,10 @@ export function Navbar() {
           <ul className="flex flex-wrap justify-end gap-x-1 gap-y-1 font-grotesk text-sm font-bold sm:text-lg">
             {links.map((l) => (
               <li key={l.href}>
-                {/* Invisible border until hover, so the box pops in without shifting the layout */}
+                {/* Underline is an ::after bar that grows out from the middle on hover or keyboard focus */}
                 <a
                   href={l.href}
-                  className="block rounded-xs border-2 border-transparent px-2 py-1 transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:border-border hover:bg-sky-200 hover:shadow-[2px_2px_0_0_var(--border)] dark:hover:bg-sky-900"
+                  className="relative block px-2 py-1 after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:origin-center after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100 motion-reduce:after:transition-none"
                 >
                   {l.label}
                 </a>
