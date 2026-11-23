@@ -10,7 +10,6 @@ const STAR_DENSITY = 3500; // one star per this many px² of screen
 const MAX_STARS = 450;
 const SHOOTING_STAR_MS = [2500, 7000]; // random gap between shooting stars
 const SHIP_MS = [6000, 14000]; // random gap between spaceships
-const PLANET_ALPHA = 0.85; // planets sit behind text, so keep them a little see-through
 const SHAPE_STAR_DENSITY = 28000; // one coloured star shape per this many px²
 const MAX_SHAPE_STARS = 40;
 
@@ -25,19 +24,20 @@ type Puff = { x: number; y: number; age: number };
 // fx/fy are fractions of the screen; r is scaled down on small screens.
 type PlanetSpec = {
   fx: number; fy: number; r: number; base: string; tilt: number; bob: number;
+  spin: number; // rotation speed, radians per second (one full turn takes 2π / spin seconds)
   bands?: string[]; land?: string[]; craters?: string; ring?: string; glow?: string;
 };
 const PLANETS: PlanetSpec[] = [
   // Saturn-like: pale blue-white bands with golden rings
-  { fx: 0.9, fy: 0.2, r: 70, base: "#dbe4ee", bands: ["#9ec5e8", "#f8fafc", "#7393b3", "#c9d6e3"], ring: "#e9c46a", tilt: -0.35, bob: 0.25 },
+  { fx: 0.9, fy: 0.2, r: 70, base: "#dbe4ee", bands: ["#9ec5e8", "#f8fafc", "#7393b3", "#c9d6e3"], ring: "#e9c46a", tilt: -0.35, bob: 0.25, spin: 0.1 },
   // Earth-like: blue ocean with warm continents and a thin atmosphere
-  { fx: 0.07, fy: 0.78, r: 48, base: "#3d7fb8", land: ["#e9c46a", "#d9893d", "#f4a261", "#8fae7e", "#e76f51"], glow: "#bae6fd", tilt: 0.2, bob: 0.18 },
+  { fx: 0.07, fy: 0.78, r: 48, base: "#3d7fb8", land: ["#e9c46a", "#d9893d", "#f4a261", "#8fae7e", "#e76f51"], glow: "#bae6fd", tilt: 0.2, bob: 0.18, spin: 0.12 },
   // Jupiter-like: orange with red and cream stripes
-  { fx: 0.96, fy: 0.62, r: 32, base: "#f4a340", bands: ["#e4572e", "#fcd88a", "#c2410c", "#fde68a"], tilt: 0.12, bob: 0.3 },
+  { fx: 0.96, fy: 0.62, r: 32, base: "#f4a340", bands: ["#e4572e", "#fcd88a", "#c2410c", "#fde68a"], tilt: 0.12, bob: 0.3, spin: 0.18 },
   // Mars-like: small, red, cratered
-  { fx: 0.58, fy: 0.93, r: 17, base: "#d9573f", craters: "#8c2f22", tilt: 0, bob: 0.4 },
+  { fx: 0.58, fy: 0.93, r: 17, base: "#d9573f", craters: "#8c2f22", tilt: 0, bob: 0.4, spin: 0.15 },
   // Tiny teal planet with its own little ring
-  { fx: 0.34, fy: 0.07, r: 10, base: "#5eadc4", bands: ["#8fd3e3", "#3d8aa1"], ring: "#f1e3b5", tilt: 0.5, bob: 0.5 },
+  { fx: 0.34, fy: 0.07, r: 10, base: "#5eadc4", bands: ["#8fd3e3", "#3d8aa1"], ring: "#f1e3b5", tilt: 0.5, bob: 0.5, spin: 0.25 },
 ];
 
 const STAR_COLORS = ["#ffffff", "#ffffff", "#ffffff", "#bfdbfe", "#fde68a", "#fbbf24", "#f87171"];
@@ -67,62 +67,69 @@ function paintRing(g: CanvasRenderingContext2D, p: PlanetSpec, r: number, half: 
   g.restore();
 }
 
-// Smooth random blob, for continents and cloud-like patches.
-function blob(g: CanvasRenderingContext2D, cx: number, cy: number, radius: number) {
+// Smooth random blob, for continents and cloud-like patches. Its points are made once so the same
+// shape can be painted twice (either side of the texture's seam).
+function blobPoints(cx: number, cy: number, radius: number) {
   const n = 12;
-  const pts = Array.from({ length: n }, (_, i) => {
+  return Array.from({ length: n }, (_, i) => {
     const a = (i / n) * Math.PI * 2;
     const d = radius * (0.6 + Math.random() * 0.6);
     return [cx + Math.cos(a) * d, cy + Math.sin(a) * d * 0.8];
   });
+}
+function fillBlob(g: CanvasRenderingContext2D, pts: number[][], dx: number) {
+  const n = pts.length;
+  const mid = (a: number[], b: number[]) => [(a[0] + b[0]) / 2 + dx, (a[1] + b[1]) / 2];
   g.beginPath();
-  const mid = (a: number[], b: number[]) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
   const start = mid(pts[n - 1], pts[0]);
   g.moveTo(start[0], start[1]);
   pts.forEach((p, i) => {
     const m = mid(p, pts[(i + 1) % n]);
-    g.quadraticCurveTo(p[0], p[1], m[0], m[1]);
+    g.quadraticCurveTo(p[0] + dx, p[1], m[0], m[1]);
   });
   g.fill();
 }
 
-// Paints one planet (with rings) into its own small canvas once, so each frame only has to copy it.
-function paintPlanet(p: PlanetSpec, r: number, dpr: number): HTMLCanvasElement {
-  const reach = p.ring ? r * 2.15 : r * 1.2;
-  const size = Math.ceil(reach * 2 + 6);
+const makeCanvas = (w: number, h: number, dpr: number) => {
   const c = document.createElement("canvas");
-  c.width = c.height = Math.ceil(size * dpr);
+  c.width = Math.ceil(w * dpr);
+  c.height = Math.ceil(h * dpr);
   const g = c.getContext("2d")!;
   g.scale(dpr, dpr);
-  g.translate(size / 2, size / 2);
-  const ringRadii = p.ring ? [1.3, 1.42, 1.55, 1.68, 1.82, 1.96].map((v) => v + (Math.random() - 0.5) * 0.04) : [];
+  return { c, g };
+};
 
-  if (p.ring) paintRing(g, p, r, "back", ringRadii);
+// A planet is drawn in three layers: the back half of its ring, the spinning surface, and on top the
+// fixed lighting, atmosphere and front half of the ring. Only the surface moves.
+export type PlanetLayers = { r: number; size: number; dpr: number; span: number; back: HTMLCanvasElement; surface: HTMLCanvasElement; front: HTMLCanvasElement };
 
-  g.save();
-  g.beginPath();
-  g.arc(0, 0, r, 0, Math.PI * 2);
-  g.clip();
+// The surface is painted flat, like a world map: one full turn is `span` = 2πr px wide (so 1px of map
+// = 1px at the planet's centre). A quarter turn is repeated past the right edge so a slice never wraps.
+function paintSurface(p: PlanetSpec, r: number, dpr: number) {
+  const span = 2 * Math.PI * r;
+  const extra = span * 0.25;
+  const h = r * 2;
+  const { c, g } = makeCanvas(span + extra, h, dpr);
   g.fillStyle = p.base;
-  g.fillRect(-r, -r, r * 2, r * 2);
+  g.fillRect(0, 0, span + extra, h);
+  const seam = [0, -span]; // anything crossing the right edge also shows at the left edge
 
-  g.save();
-  g.rotate(p.tilt);
   if (p.bands) {
-    // Wavy painted stripes of varying thickness, like gas-giant cloud bands.
+    // Wavy painted stripes of varying thickness, like gas-giant cloud bands. A whole number of waves per
+    // turn keeps them seamless.
     const count = Math.max(5, Math.round(r / 6));
     for (let i = 0; i < count; i++) {
-      const y = -r + ((i + 0.5) * 2 * r) / count + (Math.random() - 0.5) * r * 0.12;
-      const freq = 2 + Math.random() * 3;
+      const y = ((i + 0.5) * h) / count + (Math.random() - 0.5) * r * 0.12;
+      const waves = 2 + Math.floor(Math.random() * 4);
       const ph = Math.random() * 6;
       g.strokeStyle = pick(p.bands);
       g.globalAlpha = 0.55 + Math.random() * 0.4;
       g.lineWidth = r * (0.04 + Math.random() * 0.14);
       g.lineCap = "round";
       g.beginPath();
-      for (let x = -r * 1.2; x <= r * 1.2; x += r / 12) {
-        const yy = y + Math.sin((x / r) * freq + ph) * r * 0.05;
-        if (x === -r * 1.2) g.moveTo(x, yy);
+      for (let x = 0; x <= span + extra + r; x += r / 12) {
+        const yy = y + Math.sin((x / span) * Math.PI * 2 * waves + ph) * r * 0.05;
+        if (x === 0) g.moveTo(x, yy);
         else g.lineTo(x, yy);
       }
       g.stroke();
@@ -130,50 +137,88 @@ function paintPlanet(p: PlanetSpec, r: number, dpr: number): HTMLCanvasElement {
   }
   if (p.land) {
     // Continents: a big blob in one colour with a smaller blob of another on top for relief.
-    for (let k = 0; k < 7; k++) {
-      const cx = (Math.random() - 0.5) * r * 1.7;
-      const cy = (Math.random() - 0.5) * r * 1.7;
-      const size = r * (0.18 + Math.random() * 0.28);
+    for (let k = 0; k < 14; k++) {
+      const cx = Math.random() * span;
+      const cy = h * (0.12 + Math.random() * 0.76);
+      const size = r * (0.28 + Math.random() * 0.35);
+      const outer = blobPoints(cx, cy, size);
+      const inner = blobPoints(cx + size * 0.15, cy + size * 0.1, size * 0.5);
+      const [a, b] = [pick(p.land), pick(p.land)];
       g.globalAlpha = 0.95;
-      g.fillStyle = pick(p.land);
-      blob(g, cx, cy, size);
-      g.fillStyle = pick(p.land);
-      blob(g, cx + size * 0.15, cy + size * 0.1, size * 0.5);
+      for (const dx of seam) {
+        g.fillStyle = a;
+        fillBlob(g, outer, dx);
+        g.fillStyle = b;
+        fillBlob(g, inner, dx);
+      }
     }
     // Wispy clouds
     g.fillStyle = "#ffffff";
-    for (let k = 0; k < 4; k++) {
-      g.globalAlpha = 0.18;
-      blob(g, (Math.random() - 0.5) * r * 1.6, (Math.random() - 0.5) * r * 1.6, r * 0.18);
+    g.globalAlpha = 0.18;
+    for (let k = 0; k < 6; k++) {
+      const cloud = blobPoints(Math.random() * span, h * (0.1 + Math.random() * 0.8), r * 0.2);
+      for (const dx of seam) fillBlob(g, cloud, dx);
     }
   }
   if (p.craters) {
-    for (let k = 0; k < 6; k++) {
-      const cx = (Math.random() - 0.5) * r * 1.5;
-      const cy = (Math.random() - 0.5) * r * 1.5;
+    for (let k = 0; k < 9; k++) {
+      const cx = Math.random() * span;
+      const cy = h * (0.2 + Math.random() * 0.6);
       const cr = r * (0.08 + Math.random() * 0.14);
-      g.globalAlpha = 0.45;
-      g.fillStyle = p.craters;
-      g.beginPath();
-      g.arc(cx, cy, cr, 0, Math.PI * 2);
-      g.fill();
-      g.globalAlpha = 0.25; // lit lower-right rim
-      g.strokeStyle = "#ffffff";
-      g.lineWidth = Math.max(0.6, cr * 0.25);
-      g.beginPath();
-      g.arc(cx, cy, cr, 0.1 * Math.PI, 0.7 * Math.PI);
-      g.stroke();
+      for (const dx of seam) {
+        g.globalAlpha = 0.45;
+        g.fillStyle = p.craters;
+        g.beginPath();
+        g.arc(cx + dx, cy, cr, 0, Math.PI * 2);
+        g.fill();
+        g.globalAlpha = 0.25; // lit lower-right rim
+        g.strokeStyle = "#ffffff";
+        g.lineWidth = Math.max(0.6, cr * 0.25);
+        g.beginPath();
+        g.arc(cx + dx, cy, cr, 0.1 * Math.PI, 0.7 * Math.PI);
+        g.stroke();
+      }
     }
   }
   // Painterly grain
-  for (let k = 0; k < r * 4; k++) {
+  for (let k = 0; k < r * 12; k++) {
     g.globalAlpha = 0.08 + Math.random() * 0.08;
     g.fillStyle = Math.random() < 0.5 ? "#ffffff" : "#000000";
     g.beginPath();
-    g.arc((Math.random() - 0.5) * r * 2, (Math.random() - 0.5) * r * 2, 0.4 + Math.random() * 0.8, 0, Math.PI * 2);
+    g.arc(Math.random() * span, Math.random() * h, 0.4 + Math.random() * 0.8, 0, Math.PI * 2);
     g.fill();
   }
-  g.restore();
+  // Repeat the first quarter turn past the right edge, pixel for pixel.
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalAlpha = 1;
+  const spanPx = Math.round(span * dpr);
+  g.drawImage(c, 0, 0, c.width - spanPx, c.height, spanPx, 0, c.width - spanPx, c.height);
+  return { surface: c, span: spanPx / dpr };
+}
+
+// Paints the planet's layers once, so each frame only copies them (and slices the surface).
+function paintPlanet(p: PlanetSpec, r: number, dpr: number): PlanetLayers {
+  const reach = p.ring ? r * 2.15 : r * 1.2;
+  const size = Math.ceil(reach * 2 + 6);
+  const ringRadii = p.ring ? [1.3, 1.42, 1.55, 1.68, 1.82, 1.96].map((v) => v + (Math.random() - 0.5) * 0.04) : [];
+
+  const back = makeCanvas(size, size, dpr);
+  back.g.translate(size / 2, size / 2);
+  if (p.ring) {
+    paintRing(back.g, p, r, "back", ringRadii);
+    // Cut the planet's disc out of the back ring, so it can't show through the see-through planet.
+    back.g.globalCompositeOperation = "destination-out";
+    back.g.beginPath();
+    back.g.arc(0, 0, r, 0, Math.PI * 2);
+    back.g.fill();
+  }
+
+  const { c: front, g } = makeCanvas(size, size, dpr);
+  g.translate(size / 2, size / 2);
+  g.save();
+  g.beginPath();
+  g.arc(0, 0, r, 0, Math.PI * 2);
+  g.clip();
 
   // Night side: light comes from the top-left, so the bottom-right falls into a soft navy shadow.
   g.globalAlpha = 1;
@@ -205,7 +250,30 @@ function paintPlanet(p: PlanetSpec, r: number, dpr: number): HTMLCanvasElement {
   }
 
   if (p.ring) paintRing(g, p, r, "front", ringRadii);
-  return c;
+  return { r, size, dpr, back: back.c, front, ...paintSurface(p, r, dpr) };
+}
+
+// Draws the spinning surface: the disc is cut into thin vertical slices, and each slice copies the strip
+// of map at its longitude. Slices near the edge take a wider strip squeezed thin, so the surface looks
+// like it curves around the sphere instead of sliding past flat.
+function drawSurface(g: CanvasRenderingContext2D, L: PlanetLayers, tilt: number, turn: number) {
+  const { r, span, dpr, surface } = L;
+  g.save();
+  g.beginPath();
+  g.arc(0, 0, r, 0, Math.PI * 2);
+  g.clip();
+  g.rotate(tilt);
+  const slices = Math.max(12, Math.round(r));
+  const w = (2 * r) / slices;
+  for (let i = 0; i < slices; i++) {
+    const x0 = -r + i * w;
+    const lon = Math.asin(Math.max(-0.999, Math.min(0.999, (x0 + w / 2) / r)));
+    let u = ((lon - turn) * r) % span; // map px per radian = r
+    if (u < 0) u += span;
+    const srcW = Math.min(span * 0.24, w / Math.cos(lon));
+    g.drawImage(surface, u * dpr, 0, srcW * dpr, 2 * r * dpr, x0, -r * 1.05, w + 0.6, r * 2.1);
+  }
+  g.restore();
 }
 
 // 4- or 5-pointed star outline, like the coloured stars sprinkled through the reference.
@@ -235,7 +303,7 @@ export function SpaceBackground() {
     let scale = 1;
     let stars: Star[] = [];
     let shapeStars: ShapeStar[] = [];
-    let sprites: { p: PlanetSpec; img: HTMLCanvasElement; size: number }[] = [];
+    let planets: { p: PlanetSpec; layers: PlanetLayers }[] = [];
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       width = window.innerWidth;
@@ -270,10 +338,7 @@ export function SpaceBackground() {
         phase: Math.random() * Math.PI * 2,
         color: pick(SHAPE_COLORS),
       }));
-      sprites = PLANETS.map((p) => {
-        const r = p.r * Math.max(0.55, scale);
-        return { p, img: paintPlanet(p, r, dpr), size: 0 };
-      }).map((s) => ({ ...s, size: s.img.width / dpr }));
+      planets = PLANETS.map((p) => ({ p, layers: paintPlanet(p, p.r * Math.max(0.55, scale), dpr) }));
     };
 
     let shooting: ShootingStar[] = [];
@@ -327,11 +392,18 @@ export function SpaceBackground() {
     };
 
     const drawPlanets = (t: number) => {
-      ctx.globalAlpha = PLANET_ALPHA;
-      for (const { p, img, size } of sprites) {
+      // Fully opaque: the surface is drawn as overlapping slices, which would show as lines if see-through.
+      ctx.globalAlpha = 1;
+      for (const { p, layers } of planets) {
         const x = p.fx * width;
         const y = p.fy * height + Math.sin(t * p.bob + p.fx * 10) * 6; // slow bob
-        ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
+        const half = layers.size / 2;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.drawImage(layers.back, -half, -half, layers.size, layers.size);
+        drawSurface(ctx, layers, p.tilt, t * p.spin);
+        ctx.drawImage(layers.front, -half, -half, layers.size, layers.size);
+        ctx.restore();
       }
       ctx.globalAlpha = 1;
     };
