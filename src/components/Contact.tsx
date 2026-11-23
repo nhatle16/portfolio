@@ -1,7 +1,7 @@
 import { Mail } from "lucide-react";
 import { DiscordButton, contactButton } from "./DiscordButton";
 
-// lucide-react no longer ships brand logos, so GitHub and LinkedIn are inline SVGs (Simple Icons paths).
+// lucide-react no longer ships brand logos, so GitHub, LinkedIn and X are inline SVGs (Simple Icons paths).
 const brand = (d: string) =>
   function BrandIcon({ className }: { className?: string }) {
     return (
@@ -17,12 +17,16 @@ const GitHubIcon = brand(
 const LinkedInIcon = brand(
   "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
 );
+const XIcon = brand(
+  "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z",
+);
 
 // External profiles open in a new tab; the email link opens the visitor's mail app instead.
 const links = [
   { href: "mailto:mnhat.dev@gmail.com", label: "My Gmail", icon: Mail, external: false },
   { href: "https://github.com/nhatle16", label: "My GitHub", icon: GitHubIcon, external: true },
   { href: "https://linkedin.com/in/minhnhatle1", label: "My LinkedIn", icon: LinkedInIcon, external: true },
+  { href: "https://x.com/mnl160", label: "My X/Twitter", icon: XIcon, external: true },
 ];
 
 export function Contact() {
@@ -31,7 +35,7 @@ export function Contact() {
       <h2 className="text-3xl font-bold">Contact</h2>
       {/* Same neobrutalist card as Skills/Projects: thick border, hard shadow, soft gradient. */}
       <div className="space-y-6 rounded-xs border-2 border-border bg-linear-to-br from-sky-100 to-white p-6 shadow-[4px_4px_0_0_var(--border)] dark:from-sky-950 dark:to-background sm:p-8">
-        <p className="max-w-prose text-lg">
+        <p className="font-garamond text-justify hyphens-auto text-lg sm:text-xl">
           Built something cool or spotted an interesting edge case in one of my repos? Let’s connect. I’m always open to
           collaborating on open-source tooling or discussing exciting opportunities.
         </p>
