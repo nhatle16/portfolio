@@ -107,16 +107,14 @@ export function FloatingObjects() {
     resize();
     window.addEventListener("resize", resize);
 
-    // Trail colour: black in light mode; in dark mode black would vanish on the dark page, so use the text colour.
-    // Re-read when the sun/moon toggle flips data-theme.
-    let color = "";
-    const readColor = () => {
-      color = document.documentElement.dataset.theme === "dark"
-        ? getComputedStyle(document.documentElement).getPropertyValue("--foreground").trim()
-        : "#000";
+    // Light mode only: dark mode shows SpaceBackground instead, so pause while the sun/moon toggle says dark.
+    const color = "#000";
+    let dark = false;
+    const readTheme = () => {
+      dark = document.documentElement.dataset.theme === "dark";
     };
-    readColor();
-    const themeObserver = new MutationObserver(readColor);
+    readTheme();
+    const themeObserver = new MutationObserver(readTheme);
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     const objects: FloatingObject[] = [];
@@ -180,6 +178,10 @@ export function FloatingObjects() {
     const frame = (now: number) => {
       const dt = Math.min(now - last, 50) / 1000; // cap so a background tab doesn't teleport objects
       last = now;
+      if (dark) {
+        raf = requestAnimationFrame(frame); // hidden in dark mode: skip the work, keep listening
+        return;
+      }
 
       if (now >= nextSpawn && objects.filter((o) => !o.gone).length < MAX_OBJECTS) {
         spawn();
@@ -298,10 +300,10 @@ export function FloatingObjects() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden dark:hidden">
       <canvas ref={canvasRef} className="absolute inset-0 size-full" />
       {/* Objects are cloned from the hidden templates below and moved directly, without React re-renders. */}
-      <div ref={layerRef} className="absolute inset-0 text-black dark:text-foreground" style={{ opacity: OPACITY }} />
+      <div ref={layerRef} className="absolute inset-0 text-black" style={{ opacity: OPACITY }} />
       <div ref={templatesRef} hidden>
         {ICONS.map((Icon, i) => (
           <Icon key={i} size={SIZE} strokeWidth={1.5} />
