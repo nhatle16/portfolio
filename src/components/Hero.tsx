@@ -1,10 +1,5 @@
 import Image from "next/image";
 
-const links = [
-    { href: "https://github.com/nhatle16", label: "GitHub" },
-    { href: "https://linkedin.com/in/minhnhatle1", label: "LinkedIn" },
-    { href: "mailto:mnhat.dev@gmail.com", label: "Email" },
-];
 
 const link = "font-medium text-sky-700 underline decoration-2 underline-offset-4 hover:text-sky-900 dark:text-sky-400 dark:hover:text-sky-300";
 
@@ -31,20 +26,6 @@ export function Hero() {
                 <p className="font-garamond text-xl sm:text-2xl">
                     I build AI agents that break things on purpose (websites, code, models) so real users don&apos;t
                     have to. Take a look at my <a href="#projects" className={link}>projects</a>.
-                </p>
-                <p className="pt-2">
-                    {links.map((l, i) => (
-                        <span key={l.href}>
-                            {i > 0 && " / "}
-                            {l.href.startsWith("http") ? (
-                                <a href={l.href} target="_blank" rel="noopener noreferrer" className={link}>
-                                    {l.label}<span className="sr-only"> (opens in a new tab)</span>
-                                </a>
-                            ) : (
-                                <a href={l.href} className={link}>{l.label}</a>
-                            )}
-                        </span>
-                    ))}
                 </p>
             </div>
         </section>
