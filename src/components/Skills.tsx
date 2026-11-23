@@ -6,7 +6,7 @@ const skillGroups = [
   { title: "AI & LLM", icon: BrainCircuit, bg: "from-violet-50", items: ["LangChain", "LangGraph", "LangSmith", "Gemini API", "Claude API", "Prompt Engineering", "LLM Traceability"] },
   { title: "ML & Data", icon: ChartLine, bg: "from-amber-50", items: ["Scikit-learn", "Pandas", "NumPy", "PyTorch", "Matplotlib"] },
   { title: "Web & Backend", icon: Server, bg: "from-emerald-50", items: ["React", "Node.js", "Next.js", "Express.js", "REST APIs"] },
-  { title: "Databases", icon: Database, bg: "from-rose-100", items: ["PostgreSQL", "MySQL", "MongoDB", "Redis"] },
+  { title: "Databases", icon: Database, bg: "from-rose-50", items: ["PostgreSQL", "MySQL", "MongoDB", "Redis"] },
   { title: "Cloud, DevOps & Testing", icon: CloudCog, bg: "from-indigo-100", items: ["Docker", "Google Cloud Run", "Git", "Pytest"] },
 ];
 

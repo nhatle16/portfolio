@@ -42,7 +42,7 @@ const jobs: Job[] = [
 
 function NowBadge() {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-xs border-2 border-border bg-background px-2 py-0.5 font-grotesk text-xs font-bold uppercase tracking-wider">
+    <span className="inline-flex items-center gap-1.5 rounded-xs border-2 border-border bg-background px-2 py-0.5 font-grotesk text-[13px] font-bold uppercase tracking-wider">
       {/* Solid dot with a pinging copy behind it; the ping stops for reduced-motion users. */}
       <span aria-hidden="true" className="relative flex size-2">
         <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75 motion-reduce:animate-none" />
@@ -73,14 +73,14 @@ export function Experience() {
               <article className="space-y-3 rounded-xs border-2 border-border bg-background p-5 shadow-[4px_4px_0_0_var(--shadow-color)]">
                 <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
                   <div>
-                    <h3 className="font-grotesk text-lg font-bold">{job.role}</h3>
-                    <p className="font-grotesk text-sm text-neutral-600 dark:text-neutral-400">
+                    <h3 className="font-grotesk text-[19px] font-bold">{job.role}</h3>
+                    <p className="font-grotesk text-[15px] text-neutral-600 dark:text-neutral-400">
                       {job.org} · {job.dates}
                     </p>
                   </div>
                   {job.current && <NowBadge />}
                 </div>
-                <ul className="list-disc space-y-1 pl-5">
+                <ul className="list-disc space-y-1 pl-5 text-[17px]">
                   {job.points.map((p) => <li key={p}>{p}</li>)}
                 </ul>
               </article>
