@@ -32,7 +32,7 @@ const links = [
 export function Contact() {
   return (
     <section id="contact" className="py-16 space-y-6">
-      <h2 className="text-3xl font-bold">Contact</h2>
+      <h2 className="font-grotesk text-5xl font-bold">Contact</h2>
       {/* Same neobrutalist card as Skills/Projects: thick border, hard shadow, soft gradient. */}
       <div className="space-y-6 rounded-xs border-2 border-border bg-linear-to-br from-sky-100 to-white p-6 shadow-[4px_4px_0_0_var(--border)] dark:from-sky-950 dark:to-background sm:p-8">
         <p className="font-garamond text-justify hyphens-auto text-lg sm:text-xl">

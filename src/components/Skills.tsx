@@ -14,7 +14,7 @@ const skillGroups = [
 export function Skills() {
   return (
     <section id="skills" className="py-16 space-y-6">
-      <h2 className="text-3xl font-bold">Skills</h2>
+      <h2 className="font-grotesk text-5xl font-bold">Skills</h2>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {skillGroups.map((group) => (
           // Same neobrutalist card as ProjectCard: thick border, hard shadow.

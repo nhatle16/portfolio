@@ -57,7 +57,7 @@ function NowBadge() {
 export function Experience() {
   return (
     <section id="experience" className="py-16 space-y-6">
-      <h2 className="text-3xl font-bold">Experience</h2>
+      <h2 className="font-grotesk text-5xl font-bold">Experience</h2>
       <ol className="relative space-y-8">
         {/* Timeline spine, centred under the 2.5rem icon column */}
         <span aria-hidden="true" className="absolute top-2 bottom-2 left-5 w-0.5 -translate-x-1/2 bg-border" />

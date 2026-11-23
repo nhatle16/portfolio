@@ -41,7 +41,7 @@ const projects: Project[] = [
 export function Projects() {
   return (
     <section id="projects" className="py-16 space-y-6">
-      <h2 className="text-3xl font-bold">Projects</h2>
+      <h2 className="font-grotesk text-5xl font-bold">Projects</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         {projects.map((p) => <ProjectCard key={p.name} project={p} />)}
       </div>
