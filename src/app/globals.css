@@ -13,7 +13,7 @@
   /* colour of every hard shadow; same as the border in light mode, blue in dark mode */
   --shadow-color: #000000;
   --shadow: var(--shadow-x) var(--shadow-y) 0px 0px var(--shadow-color);
-  --card-tint: #d7fe75;
+  --card-tint: #f8ffe7;
 }
 
 @theme inline {

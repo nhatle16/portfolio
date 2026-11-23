@@ -34,7 +34,7 @@ export function Contact() {
     <section id="contact" className="py-16 space-y-6">
       <h2 className="font-grotesk text-5xl font-bold">Contact</h2>
       {/* Same neobrutalist card as Skills/Projects: thick border, hard shadow, plain background. */}
-      <div className="space-y-6 rounded-xs border-2 border-border bg-background dark:bg-[linear-gradient(to_bottom_right,#8f9e9a,#6a7889_7%,#3a4660_18%,#232a3a_29%,var(--background)_40%)] p-6 shadow-[4px_4px_0_0_var(--shadow-color)] sm:p-8">
+      <div className="space-y-6 rounded-xs border-2 border-border bg-linear-to-br from-[#fefcf7] via-[#fef7f3] to-[#fbf5fd] dark:bg-[linear-gradient(to_bottom_right,#8f9e9a,#6a7889_7%,#3a4660_18%,#232a3a_29%,var(--background)_40%)] p-6 shadow-[4px_4px_0_0_var(--shadow-color)] sm:p-8">
         <p className="font-garamond font-medium text-justify hyphens-auto text-lg sm:text-xl">
           Built something cool or spotted an interesting edge case in one of my repos? Let’s connect. I’m always open to
           collaborating on open-source tooling or discussing exciting opportunities.
