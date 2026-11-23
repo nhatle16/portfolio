@@ -10,8 +10,10 @@
   --border: #000000;
   --shadow-x: 10px;
   --shadow-y: 6px;
-  --shadow: var(--shadow-x) var(--shadow-y) 0px 0px var(--border);
-  --card-tint: #1bb5f2;
+  /* colour of every hard shadow; same as the border in light mode, blue in dark mode */
+  --shadow-color: #000000;
+  --shadow: var(--shadow-x) var(--shadow-y) 0px 0px var(--shadow-color);
+  --card-tint: #8cb031;
 }
 
 @theme inline {
@@ -22,6 +24,7 @@
   --font-grotesk: var(--font-space-grotesk); /* loaded in layout.tsx, used by project names and tech tags */
   --font-garamond: var(--font-eb-garamond); /* loaded in layout.tsx; use it with the font-garamond class */
   --color-border: var(--border);
+  --color-shadow: var(--shadow-color); /* border-shadow etc., used by the image card's offset outline */
   --radius-base: 5px;
   --shadow-shadow: var(--shadow);
   --font-weight-base: 500;
@@ -32,8 +35,21 @@
 :root[data-theme="dark"] {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --border: #a3a3a3;
-  --card-tint: #1e2a44;
+  --border: #ffffff;
+  --shadow-color: #ffffff;
+  --card-tint: #068cd4;
+}
+
+/* Dark mode uses thin 1px borders instead of the 2px ones. Unlayered, so it beats the Tailwind utilities. */
+:root[data-theme="dark"] .border-2,
+:root[data-theme="dark"] .after\:border-2::after {
+  border-width: 1px;
+}
+:root[data-theme="dark"] .border-b-2 {
+  border-bottom-width: 1px;
+}
+:root[data-theme="dark"] .border-t-2 {
+  border-top-width: 1px;
 }
 
 body {

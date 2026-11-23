@@ -18,7 +18,7 @@ export function ProjectCard({ project }: { project: Project }) {
   ].filter((l) => l.href);
 
   return (
-    <article className="flex min-w-0 flex-col rounded-xs border-2 border-border bg-background shadow-[4px_4px_0_0_var(--border)]">
+    <article className="flex min-w-0 flex-col rounded-xs border-2 border-border bg-background shadow-[4px_4px_0_0_var(--shadow-color)]">
       <div className="flex-1 space-y-3 p-5">
         {project.images && project.images.length > 0 && (
           <ScreenshotStrip name={project.name} images={project.images} />
@@ -27,7 +27,7 @@ export function ProjectCard({ project }: { project: Project }) {
         {/* hyphens-auto splits long words so justified lines don't get wide gaps */}
         <p className="text-justify hyphens-auto text-neutral-600 dark:text-neutral-400">{project.description}</p>
         <div className="space-y-1 font-grotesk text-sm">
-          <span aria-hidden="true" className="block text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+          <span aria-hidden="true" className="block text-base font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             Built with
           </span>
           <ul aria-label="Built with" className="flex flex-wrap gap-x-2 gap-y-1 font-medium">

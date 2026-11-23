@@ -5,9 +5,9 @@ import { useRef, useState } from "react";
 // Discord username (not the display name): what people type into "Add Friend".
 const DISCORD_USERNAME = "_mnhatl";
 
-// Shared look for the Contact buttons: thick border, hard shadow, lifts on hover, presses flat on click.
+// Shared look for the Contact buttons: thick border, hard shadow (blue in dark mode), lifts on hover, presses flat on click.
 export const contactButton =
-  "flex items-center gap-2 rounded-xs border-2 border-border bg-background px-4 py-2 shadow-[4px_4px_0_0_var(--border)] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--border)] active:translate-x-1 active:translate-y-1 active:shadow-none";
+  "flex items-center gap-2 rounded-xs border-2 border-border bg-background px-4 py-2 shadow-[4px_4px_0_0_var(--shadow-color)] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--shadow-color)] active:translate-x-1 active:translate-y-1 active:shadow-none";
 
 // Discord logo (Simple Icons path); lucide-react has no brand logos.
 function DiscordIcon({ className }: { className?: string }) {
@@ -44,7 +44,7 @@ export function DiscordButton() {
         ref={dialog}
         aria-labelledby="discord-title"
         onClick={(e) => e.target === e.currentTarget && dialog.current?.close()}
-        className="m-auto w-[min(26rem,calc(100%-2rem))] rounded-xs border-2 border-border bg-background p-6 font-normal text-foreground shadow-[6px_6px_0_0_var(--border)] backdrop:bg-black/50 backdrop:backdrop-blur-sm"
+        className="m-auto w-[min(26rem,calc(100%-2rem))] rounded-xs border-2 border-border bg-background p-6 font-normal text-foreground shadow-[6px_6px_0_0_var(--shadow-color)] backdrop:bg-black/50 backdrop:backdrop-blur-sm"
       >
         <div className="space-y-4">
           <div className="flex items-start justify-between gap-4">

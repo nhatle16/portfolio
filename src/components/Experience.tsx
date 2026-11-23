@@ -64,13 +64,13 @@ export function Experience() {
         {jobs.map((job, i) => (
           <li key={`${job.org}-${job.role}`} className="relative grid grid-cols-[2.5rem_1fr] gap-4 sm:gap-6">
             <div
-              className={`relative grid size-10 place-items-center rounded-xs border-2 border-border bg-linear-to-br ${job.bg} shadow-[2px_2px_0_0_var(--border)]`}
+              className={`relative grid size-10 place-items-center rounded-xs border-2 border-border bg-linear-to-br ${job.bg} shadow-[2px_2px_0_0_var(--shadow-color)]`}
             >
               <job.icon aria-hidden="true" className="size-5" />
             </div>
             <Reveal delay={i * 120}>
               {/* Same card as Skills/Contact. */}
-              <article className="space-y-3 rounded-xs border-2 border-border bg-background p-5 shadow-[4px_4px_0_0_var(--border)]">
+              <article className="space-y-3 rounded-xs border-2 border-border bg-background p-5 shadow-[4px_4px_0_0_var(--shadow-color)]">
                 <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
                   <div>
                     <h3 className="font-grotesk text-lg font-bold">{job.role}</h3>
