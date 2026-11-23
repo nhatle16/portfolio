@@ -25,7 +25,7 @@ export function ProjectCard({ project }: { project: Project }) {
         )}
         <h3 className="font-grotesk text-xl font-bold">{project.name}</h3>
         {/* hyphens-auto splits long words so justified lines don't get wide gaps */}
-        <p className="text-justify hyphens-auto text-neutral-600 dark:text-neutral-400">{project.description}</p>
+        <p className="text-justify hyphens-auto text-neutral-600 dark:text-white/80">{project.description}</p>
         <div className="space-y-1 font-grotesk text-sm">
           <span aria-hidden="true" className="block text-base font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             Built with

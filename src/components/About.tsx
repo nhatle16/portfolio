@@ -9,7 +9,7 @@ export function About() {
       <h2 className="font-grotesk text-5xl font-bold">About</h2>
       {/* Neobrutalist card like Contact/Skills, with a baby-blue sky gradient.
           hyphens-auto splits long words so justified lines don't get wide gaps. */}
-      <div className="space-y-4 rounded-xs border-2 border-border bg-linear-to-br from-sky-200 via-emerald-50 to-white p-6 text-justify hyphens-auto shadow-[4px_4px_0_0_var(--shadow-color)] dark:from-background dark:via-background dark:to-background sm:p-8">
+      <div className="space-y-4 rounded-xs border-2 border-border bg-background dark:bg-[linear-gradient(to_bottom_right,#86998f,#414e6b_8%,var(--background)_40%)] p-6 text-justify hyphens-auto shadow-[4px_4px_0_0_var(--shadow-color)] sm:p-8">
         <p className="font-garamond text-lg sm:text-xl">
           Hi <E>👋</E>, I’m Nhat, but most people know me as Nolan. I’m originally from Vietnam and currently pursuing my
           bachelor’s degree in Computer Science at the University of Saskatchewan in Saskatoon, Canada.
