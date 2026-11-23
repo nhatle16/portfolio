@@ -46,16 +46,17 @@ const projects: Project[] = [
         description: "Chat interface: AFTA provides a chat interface for interacting with the testing agent.",
       },
       {
-        src: "/projects/afta-chat-result.png",
+        src: "/projects/afta-chat-output.png",
         description: "Test results: AFTA displays the results of the automated testing.",
       },
       {
         src: "/projects/afta-terminal.png",
+        position: "object-left-top",
         description: "Terminal output: AFTA runs the tests in a sandboxed environment and shows the output.",
       },
       {
-        src: "/projects/afta-terminal-result.png",
-        description: "Test results in terminal: AFTA shows the results of the draft tests in the terminal.",
+        src: "/projects/afta-terminal-output.png",
+        description: "Test output in terminal: AFTA shows the output of the automated testing in the terminal.",
       }
     ],
     source: "https://github.com/nhatle16/autonomous-testing-agent",

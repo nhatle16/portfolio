@@ -9,7 +9,7 @@
   /* neobrutalism tokens used by components/ui; --shadow-x/--shadow-y offset the image card's outline from the card */
   --border: #000000;
   --shadow-x: 10px;
-  --shadow-y: 6px;
+  --shadow-y: 8px;
   /* colour of every hard shadow; same as the border in light mode, blue in dark mode */
   --shadow-color: #000000;
   --shadow: var(--shadow-x) var(--shadow-y) 0px 0px var(--shadow-color);

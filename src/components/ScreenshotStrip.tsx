@@ -17,6 +17,8 @@ export type Screenshot = {
   src: string;
   /** What the screenshot shows. Shown under the enlarged image and read by screen readers. */
   description: string;
+  /** Tailwind object-position class when the default top-centre crop cuts off something, e.g. "object-left-top". */
+  position?: string;
 };
 
 export function ScreenshotStrip({ name, images }: { name: string; images: Screenshot[] }) {
@@ -68,7 +70,7 @@ export function ScreenshotStrip({ name, images }: { name: string; images: Screen
               fill
               sizes="(min-width: 640px) 500px, 100vw"
               loading="eager"
-              className={`object-cover object-top ${i === index ? "" : "hidden"}`}
+              className={`object-cover ${img.position ?? "object-top"} ${i === index ? "" : "hidden"}`}
             />
           ))}
         </button>,
@@ -90,14 +92,16 @@ export function ScreenshotStrip({ name, images }: { name: string; images: Screen
         }}
         // Backdrop contrasts with the border: light behind the black border, dark behind the white one.
         // Bottom padding leaves room for the card's offset outline, which the dialog would otherwise clip.
-        className="m-auto w-[min(64rem,calc(100%-2rem))] max-w-none bg-transparent p-0 pb-(--shadow-y) text-foreground backdrop:bg-white/85 backdrop:backdrop-blur-sm dark:backdrop:bg-black/85"
+        // autoFocus focuses the dialog itself on open, so the close button doesn't start with a focus ring.
+        autoFocus
+        className="m-auto outline-none w-[min(64rem,calc(100%-2rem))] max-w-none bg-transparent p-0 pb-(--shadow-y) text-foreground backdrop:bg-white/85 backdrop:backdrop-blur-sm dark:backdrop:bg-black/85"
       >
         <div className="flex justify-end pb-2">
           <button
             type="button"
             onClick={() => dialog.current?.close()}
             aria-label="Close"
-            className="px-2 text-2xl font-bold leading-none hover:opacity-60"
+            className="rounded-xs px-2 text-2xl font-bold leading-none outline-none hover:opacity-60 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-border"
           >
             ✕
           </button>
@@ -106,6 +110,7 @@ export function ScreenshotStrip({ name, images }: { name: string; images: Screen
           <ImageCard
             imageUrl={images[index].src}
             alt={images[index].description}
+            imageClassName={images[index].position}
             caption={
               <span className="block space-y-1">
                 <span className="flex justify-between gap-4 text-sm text-neutral-600 dark:text-neutral-400">

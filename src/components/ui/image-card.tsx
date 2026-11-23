@@ -5,9 +5,10 @@ type Props = {
   caption: React.ReactNode
   alt: string
   className?: string
+  imageClassName?: string
 }
 
-export default function ImageCard({ imageUrl, caption, alt, className }: Props) {
+export default function ImageCard({ imageUrl, caption, alt, className, imageClassName }: Props) {
   return (
     <figure
       className={cn(
@@ -18,7 +19,7 @@ export default function ImageCard({ imageUrl, caption, alt, className }: Props) 
       )}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- full-size screenshot shown on demand */}
-      <img className="w-full aspect-video rounded-t-[3px] object-cover object-top" src={imageUrl} alt={alt} />
+      <img className={cn("w-full aspect-video rounded-t-[3px] object-cover", imageClassName ?? "object-top")} src={imageUrl} alt={alt} />
       <figcaption className="border-t-2 text-foreground border-border p-4">
         {caption}
       </figcaption>
