@@ -413,19 +413,25 @@ export function SpaceBackground() {
     let planets: { p: PlanetSpec; layers: PlanetLayers }[] = [];
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
+      const sameWidth = window.innerWidth === width;
       width = window.innerWidth;
       height = window.innerHeight;
       scale = Math.min(1, width / 1200);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // On phones, scrolling shows and hides the browser's address bar, which only changes the height and fires
+      // "resize". Keep the current stars, streams and planets then, so the animation carries on instead of restarting.
+      if (sameWidth && stars.length > 0) return;
+      // Fill the tallest the screen can get (address bar hidden), so no empty strip appears when it grows.
+      const fieldH = Math.max(height, window.screen.height);
       // Three depths: far stars are small, dim and slow; near ones bigger, brighter and faster (parallax).
-      const count = Math.min(MAX_STARS, Math.round((width * height) / STAR_DENSITY));
+      const count = Math.min(MAX_STARS, Math.round((width * fieldH) / STAR_DENSITY));
       stars = Array.from({ length: count }, () => {
         const depth = Math.random();
         return {
           x: Math.random() * width,
-          y: Math.random() * height,
+          y: Math.random() * fieldH,
           r: 0.4 + depth * 1.2,
           speed: 2 + depth * 10,
           alpha: 0.35 + depth * 0.65,
@@ -434,10 +440,10 @@ export function SpaceBackground() {
           color: pick(STAR_COLORS),
         };
       });
-      const shapes = Math.min(MAX_SHAPE_STARS, Math.round((width * height) / SHAPE_STAR_DENSITY));
+      const shapes = Math.min(MAX_SHAPE_STARS, Math.round((width * fieldH) / SHAPE_STAR_DENSITY));
       shapeStars = Array.from({ length: shapes }, () => ({
         x: Math.random() * width,
-        y: Math.random() * height,
+        y: Math.random() * fieldH,
         size: 3 + Math.random() * 6,
         points: Math.random() < 0.5 ? 4 : 5,
         rot: Math.random() * Math.PI,
