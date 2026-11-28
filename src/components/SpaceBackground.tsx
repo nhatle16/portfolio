@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// Dark-mode background: a slowly drifting, twinkling starfield with coloured star shapes, a navy nebula wash,
+// Dark-mode background: faint falling code streams, like a hacker-movie terminal, behind a slowly drifting, twinkling starfield with coloured star shapes, a navy nebula wash,
 // illustrated planets that bob gently, shooting stars, and the odd rocket or UFO flying across. Everything is drawn on one canvas.
 // It only runs while <html data-theme="dark">; in light mode the canvas is cleared and the loop stops.
 
@@ -10,14 +10,59 @@ const STAR_DENSITY = 3500; // one star per this many px² of screen
 const MAX_STARS = 450;
 const SHOOTING_STAR_MS = [2500, 7000]; // random gap between shooting stars
 const SHIP_MS = [6000, 14000]; // random gap between spaceships
+const LOOP_TURN = 2.6; // rocket turn rate during a loop, radians per second (a full loop takes about 2.4 s)
 const SHAPE_STAR_DENSITY = 28000; // one coloured star shape per this many px²
 const MAX_SHAPE_STARS = 40;
+// Falling "hacker movie" code streams behind the stars and planets.
+const CODE_FONT = 14; // px; also the column width and row height
+// Chance an idle column starts a stream each time it re-rolls (~every 3 s); about a fifth of the columns are busy.
+// Slower streams stay on screen longer, so lowering the speed also needs a lower chance to keep the same density.
+const CODE_COLUMN_CHANCE = 0.027;
+// Real one-liners in several languages; each stream spells one out, top to bottom.
+const CODE_LINES = [
+  "def fib(n): return n if n < 2 else fib(n-1) + fib(n-2)",
+  "print(sorted(data, key=lambda x: x[1]))",
+  "import numpy as np",
+  "with open(path) as f: lines = f.readlines()",
+  "squares = [x * x for x in range(10)]",
+  "if __name__ == '__main__': main()",
+  "model.fit(X_train, y_train)",
+  "public static void main(String[] args) {",
+  "System.out.println(\"Hello, World!\");",
+  "List<String> names = new ArrayList<>();",
+  "for (int i = 0; i < n; i++) {",
+  "@Override public String toString() {",
+  "const sum = arr.reduce((a, b) => a + b, 0);",
+  "console.log(`Hello, ${name}`);",
+  "export default function App() {",
+  "const res = await fetch(url);",
+  "type User = { id: number; name: string };",
+  "useEffect(() => setReady(true), []);",
+  "#include <iostream>",
+  "std::vector<int> v = {1, 2, 3};",
+  "std::cout << \"Hello\" << std::endl;",
+  "int main() { return 0; }",
+  "template <typename T> T max(T a, T b)",
+  "fn main() { println!(\"hi\"); }",
+  "func main() { fmt.Println(\"go\") }",
+  "SELECT * FROM users WHERE id = 1;",
+  "git commit -m \"fix: off-by-one\"",
+  "while (lo <= hi) { mid = (lo + hi) / 2;",
+  "return dp[n][m];",
+  "if (node == null) return;",
+];
 
 type Star = { x: number; y: number; r: number; speed: number; alpha: number; twinkle: number; phase: number; color: string };
 type ShapeStar = { x: number; y: number; size: number; points: 4 | 5; rot: number; spin: number; phase: number; color: string };
 type ShootingStar = { x: number; y: number; vx: number; vy: number; age: number; life: number };
-type Ship = { kind: "rocket" | "ufo"; x: number; y: number; vx: number; baseY: number; phase: number; age: number };
+type Ship = {
+  kind: "rocket" | "ufo"; x: number; y: number; vx: number; baseY: number; phase: number; age: number;
+  // Rockets steer: heading/speed set the motion, turn wanders, and now and then they fly a full loop.
+  heading: number; home: number; speed: number; turn: number; turnTarget: number; retarget: number;
+  loopLeft: number; loopDir: number; nextLoop: number;
+};
 type Puff = { x: number; y: number; age: number };
+type CodeStream = { x: number; y: number; speed: number; text: string; active: boolean; wait: number };
 
 // Illustrated planets, after the storybook-style reference: painted bands, land masses or craters,
 // sketchy multi-line rings, a shaded night side and a soft highlight.
@@ -401,6 +446,42 @@ export function SpaceBackground() {
         color: pick(SHAPE_COLORS),
       }));
       planets = PLANETS.map((p) => ({ p, layers: paintPlanet(p, p.r * Math.max(0.55, scale), dpr) }));
+      codeStreams = Array.from({ length: Math.ceil(width / CODE_FONT) }, (_, i) => newStream(i * CODE_FONT, true));
+    };
+
+    let codeStreams: CodeStream[] = [];
+    // A column's stream: one line of code falling from above the screen. Idle columns wait a while, then re-roll.
+    const newStream = (x: number, initial = false): CodeStream => ({
+      x,
+      y: initial ? Math.random() * height : -Math.random() * height * 0.5,
+      speed: 28 + Math.random() * 63, // px per second
+      text: pick(CODE_LINES),
+      active: Math.random() < CODE_COLUMN_CHANCE,
+      wait: Math.random() * 6,
+    });
+
+    const drawCode = (dt: number) => {
+      ctx.font = `${CODE_FONT}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+      ctx.textBaseline = "top";
+      for (let i = 0; i < codeStreams.length; i++) {
+        const s = codeStreams[i];
+        if (!s.active) {
+          s.wait -= dt;
+          if (s.wait <= 0) codeStreams[i] = newStream(s.x); // re-roll, so CODE_COLUMN_CHANCE keeps the density
+          continue;
+        }
+        s.y += s.speed * dt;
+        // s.y is the leading (lowest) character, the line's last one; earlier characters sit above it and fade.
+        const n = s.text.length;
+        for (let j = 0; j < n; j++) {
+          const k = n - 1 - j; // distance from the leading character
+          const y = s.y - k * CODE_FONT;
+          if (s.text[j] === " " || y < -CODE_FONT || y > height) continue;
+          ctx.fillStyle = k === 0 ? "rgba(220,255,230,0.6)" : `rgba(34,197,94,${0.36 * (1 - (k / n) * 0.75)})`;
+          ctx.fillText(s.text[j], s.x, y);
+        }
+        if (s.y - s.text.length * CODE_FONT > height) codeStreams[i] = newStream(s.x);
+      }
     };
 
     let shooting: ShootingStar[] = [];
@@ -579,20 +660,43 @@ export function SpaceBackground() {
 
       for (const s of ships) {
         s.age += dt;
-        s.x += s.vx * dt;
         if (s.kind === "rocket") {
-          // Gentle S-curve: y follows a sine, and the nose follows the slope of that path.
-          s.y = s.baseY + Math.sin(s.age * 0.8 + s.phase) * 30;
-          const vy = Math.cos(s.age * 0.8 + s.phase) * 30 * 0.8;
-          const angle = Math.atan2(vy, s.vx);
+          let turn: number;
+          if (s.loopLeft > 0) {
+            s.loopLeft -= dt;
+            turn = s.loopDir * LOOP_TURN;
+          } else {
+            // Wander: every so often pick a new turn rate and ease toward it, with a gentle pull back toward
+            // the side it's heading for (stronger the longer it's been flying) so it eventually leaves the screen.
+            s.retarget -= dt;
+            if (s.retarget <= 0) {
+              s.turnTarget = (Math.random() - 0.5) * 1.8;
+              s.retarget = 0.8 + Math.random() * 1.8;
+            }
+            s.turn += (s.turnTarget - s.turn) * Math.min(1, dt * 1.5);
+            const off = Math.atan2(Math.sin(s.home - s.heading), Math.cos(s.home - s.heading));
+            turn = s.turn + off * (0.35 + s.age * 0.02);
+            s.nextLoop -= dt;
+            if (s.nextLoop <= 0 && s.x > 40 && s.x < width - 40) {
+              s.loopLeft = (Math.PI * 2) / LOOP_TURN;
+              s.loopDir = Math.random() < 0.5 ? -1 : 1;
+              s.nextLoop = 4 + Math.random() * 7;
+            }
+          }
+          s.heading += turn * dt;
+          s.x += Math.cos(s.heading) * s.speed * dt;
+          s.y += Math.sin(s.heading) * s.speed * dt;
+          const angle = s.heading;
           puffs.push({ x: s.x - Math.cos(angle) * 18, y: s.y - Math.sin(angle) * 18, age: 0 }); // at the tail
           drawRocket(s.x, s.y, angle);
         } else {
+          s.x += s.vx * dt;
           s.y = s.baseY + Math.sin(s.age * 1.6 + s.phase) * 14; // hovering bob
           drawUfo(s.x, s.y, t);
         }
       }
-      ships = ships.filter((s) => s.x > -80 && s.x < width + 80);
+      // Ships start just off screen, so give them a moment to fly in before checking whether they've left.
+      ships = ships.filter((s) => s.age < 2 || (s.x > -80 && s.x < width + 80 && s.y > -80 && s.y < height + 80));
     };
 
     const spawnShootingStar = () => {
@@ -613,7 +717,12 @@ export function SpaceBackground() {
       const kind = Math.random() < 0.6 ? "rocket" : "ufo";
       const speed = kind === "rocket" ? 90 + Math.random() * 60 : 55 + Math.random() * 35;
       const y = height * (0.15 + Math.random() * 0.65);
-      ships.push({ kind, x: fromLeft ? -60 : width + 60, y, baseY: y, vx: fromLeft ? speed : -speed, phase: Math.random() * 6, age: 0 });
+      const home = fromLeft ? 0 : Math.PI;
+      ships.push({
+        kind, x: fromLeft ? -60 : width + 60, y, baseY: y, vx: fromLeft ? speed : -speed, phase: Math.random() * 6, age: 0,
+        heading: home + (Math.random() - 0.5) * 0.6, home, speed, turn: 0, turnTarget: 0, retarget: 0,
+        loopLeft: 0, loopDir: 1, nextLoop: 1.5 + Math.random() * 4,
+      });
     };
 
     let raf = 0;
@@ -632,6 +741,7 @@ export function SpaceBackground() {
       }
       ctx.clearRect(0, 0, width, height);
       drawNebula();
+      drawCode(dt);
       drawStars(t, dt);
       drawShapeStars(t, dt);
       drawPlanets(t);
